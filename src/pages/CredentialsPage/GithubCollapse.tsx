@@ -1,5 +1,5 @@
-import GithubAuthorizeRequest from "@/dto/github-authorize.request";
-import GithubCredentialResponse from "@/dto/github-credential.response";
+import GithubAuthorizeRequest from "@/dto/credentials/github-authorize.request";
+import GithubCredentialResponse from "@/dto/credentials/github-credential.response";
 import { TableColumnItem } from "@/etc/types";
 import GithubCredentialsService from "@/services/github-credentials.service";
 import { DeleteOutlined, RetweetOutlined } from "@ant-design/icons";

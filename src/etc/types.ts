@@ -5,5 +5,5 @@ export type MenuItem = Required<MenuProps>["items"][number];
 export type CustomIconComponentProps = GetProps<typeof Icon>;
 export type CollapseItem = Required<CollapseProps>["items"][number];
 export type TableColumnItem<T = any> = Required<
-  TableProps<T>
+	TableProps<T>
 >["columns"][number];
