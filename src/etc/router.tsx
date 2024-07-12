@@ -1,4 +1,5 @@
 import RootLayout from "@/layouts/RootLayout";
+import CreateProjectPage from "@/pages/CreateProjectPage";
 import CredentialsPage from "@/pages/CredentialsPage";
 import DashboardPage from "@/pages/HomePage";
 import ProjectsPage from "@/pages/ProjectsPage";
@@ -16,7 +17,17 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/projects",
-				element: <ProjectsPage />,
+
+				children: [
+					{
+						path: "create",
+						element: <CreateProjectPage />,
+					},
+					{
+						path: "",
+						element: <ProjectsPage />,
+					},
+				],
 			},
 			{
 				path: "/credentials",
