@@ -2,7 +2,6 @@ import BitBucketIcon from "@/icons/bitbucket";
 import GithubIcon from "@/icons/github";
 import GitlabIcon from "@/icons/gitlab";
 import MainLayout from "@/layouts/MainLayout";
-import { GithubOutlined, GitlabFilled } from "@ant-design/icons";
 import { Form, Select, Space, Typography } from "antd";
 
 const { Title } = Typography;

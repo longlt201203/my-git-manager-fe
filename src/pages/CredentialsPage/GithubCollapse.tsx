@@ -1,7 +1,8 @@
 import GithubAuthorizeRequest from "@/dto/credentials/github-authorize.request";
 import GithubCredentialResponse from "@/dto/credentials/github-credential.response";
+import { GitProviderEnum } from "@/etc/enums";
 import { TableColumnItem } from "@/etc/types";
-import GithubCredentialsService from "@/services/github-credentials.service";
+import CredentialsService from "@/services/credentials.service";
 import { DeleteOutlined, RetweetOutlined } from "@ant-design/icons";
 import {
 	Avatar,
@@ -24,7 +25,7 @@ const { Text } = Typography;
 
 export default function GithubCollapse() {
 	const [messageApi, contextHolder] = message.useMessage();
-	const githubCredentialsService = GithubCredentialsService.getInstance();
+	const credentialsService = CredentialsService.getInstance();
 	const [credentials, setCredentials] = useState<GithubCredentialResponse[]>(
 		[],
 	);
@@ -49,7 +50,7 @@ export default function GithubCollapse() {
 			duration: 0,
 		});
 		try {
-			await githubCredentialsService.authorize(data);
+			await credentialsService.authorizeGithub(data);
 			messageApi.open({
 				key: "authorizingMsg",
 				type: "success",
@@ -76,7 +77,7 @@ export default function GithubCollapse() {
 	};
 
 	const fetchCredentials = async () => {
-		const data = await githubCredentialsService.getAll();
+		const data = await credentialsService.getAll(GitProviderEnum.GITHUB);
 		setCredentials(data);
 	};
 
@@ -93,7 +94,7 @@ export default function GithubCollapse() {
 	const handleDelete = async () => {
 		setIsLoading(true);
 		try {
-			await githubCredentialsService.deleteCredential({
+			await credentialsService.deleteCredential({
 				ids: [deleteId],
 			});
 		} catch (err) {
@@ -123,7 +124,7 @@ export default function GithubCollapse() {
 			duration: 0,
 		});
 		try {
-			await githubCredentialsService.reAuthorize(reAuthorizeId, data);
+			await credentialsService.reAuthorizeGithub(reAuthorizeId, data);
 			messageApi.open({
 				key: "reAuthorizingMsg",
 				type: "success",

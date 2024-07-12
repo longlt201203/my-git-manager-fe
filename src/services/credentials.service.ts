@@ -1,8 +1,8 @@
 import GithubCredentialResponse from "@/dto/credentials/github-credential.response";
 import Service from "./service";
-import DeleteGithubCredentialRequest from "@/dto/credentials/delete-github-credential.request";
 import GithubAuthorizeRequest from "@/dto/credentials/github-authorize.request";
 import { GitProviderEnum } from "@/etc/enums";
+import DeleteCredentialRequest from "@/dto/credentials/delete-credential.request";
 
 export default class CredentialsService extends Service {
 	private static instance: CredentialsService;
@@ -18,22 +18,22 @@ export default class CredentialsService extends Service {
 	}
 
 	getAll(provider: GitProviderEnum) {
-		const apiUri = this.getApiUri("/");
+		const apiUri = this.getApiUri("/" + provider);
 		return this.get<GithubCredentialResponse[]>(apiUri.toString());
 	}
 
-	deleteCredential(dto: DeleteGithubCredentialRequest) {
+	deleteCredential(dto: DeleteCredentialRequest) {
 		const apiUri = this.getApiUri("/delete");
 		return this.post(apiUri.toString(), dto);
 	}
 
-	authorize(dto: GithubAuthorizeRequest) {
-		const apiUri = this.getApiUri("/authorize");
+	authorizeGithub(dto: GithubAuthorizeRequest) {
+		const apiUri = this.getApiUri("/github/authorize");
 		return this.post(apiUri.toString(), dto);
 	}
 
-	reAuthorize(id: number, dto: GithubAuthorizeRequest) {
-		const apiUri = this.getApiUri("/re-authorize/" + id);
+	reAuthorizeGithub(id: number, dto: GithubAuthorizeRequest) {
+		const apiUri = this.getApiUri("/github/re-authorize/" + id);
 		return this.post(apiUri.toString(), dto);
 	}
 }
