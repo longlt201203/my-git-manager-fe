@@ -3,7 +3,7 @@ import MainLayout from "@/layouts/MainLayout";
 import SettingsService from "@/services/settings.service";
 import { Button, Form, Input, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const { Title } = Typography;
 

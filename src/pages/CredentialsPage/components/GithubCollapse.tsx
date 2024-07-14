@@ -1,5 +1,5 @@
+import CredentialResponse from "@/dto/credentials/credential.response";
 import GithubAuthorizeRequest from "@/dto/credentials/github-authorize.request";
-import GithubCredentialResponse from "@/dto/credentials/github-credential.response";
 import { GitProviderEnum } from "@/etc/enums";
 import { TableColumnItem } from "@/etc/types";
 import CredentialsService from "@/services/credentials.service";
@@ -26,9 +26,7 @@ const { Text } = Typography;
 export default function GithubCollapse() {
 	const [messageApi, contextHolder] = message.useMessage();
 	const credentialsService = CredentialsService.getInstance();
-	const [credentials, setCredentials] = useState<GithubCredentialResponse[]>(
-		[],
-	);
+	const [credentials, setCredentials] = useState<CredentialResponse[]>([]);
 	const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
 		useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +34,11 @@ export default function GithubCollapse() {
 	const [reAuthorizeForm] = Form.useForm();
 	const [isReAuthorizeModalOpen, setIsReAuthorizeModalOpen] = useState(false);
 	const [reAuthorizeId, setReAuthorizeId] = useState(0);
+
+	const fetchCredentials = async () => {
+		const data = await credentialsService.getAll(GitProviderEnum.GITHUB);
+		setCredentials(data);
+	};
 
 	useEffect(() => {
 		fetchCredentials();
@@ -74,11 +77,6 @@ export default function GithubCollapse() {
 		}
 		setIsLoading(false);
 		fetchCredentials();
-	};
-
-	const fetchCredentials = async () => {
-		const data = await credentialsService.getAll(GitProviderEnum.GITHUB);
-		setCredentials(data);
 	};
 
 	const openConfirmDeleteModal = (id: number) => {
@@ -148,7 +146,7 @@ export default function GithubCollapse() {
 		setIsLoading(false);
 	};
 
-	const accountTableColumns: TableColumnItem<GithubCredentialResponse>[] = [
+	const accountTableColumns: TableColumnItem<CredentialResponse>[] = [
 		{
 			title: "",
 			dataIndex: "avatar",
@@ -224,7 +222,7 @@ export default function GithubCollapse() {
 					</Form.Item>
 				</Form>
 				<Divider />
-				<Table<GithubCredentialResponse>
+				<Table<CredentialResponse>
 					columns={accountTableColumns}
 					dataSource={credentials}
 					pagination={{ disabled: true }}

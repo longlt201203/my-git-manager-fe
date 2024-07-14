@@ -1,8 +1,7 @@
-import GithubCredentialResponse from "@/dto/credentials/github-credential.response";
 import Service from "./service";
 import GithubAuthorizeRequest from "@/dto/credentials/github-authorize.request";
-import { GitProviderEnum } from "@/etc/enums";
 import DeleteCredentialRequest from "@/dto/credentials/delete-credential.request";
+import CredentialResponse from "@/dto/credentials/credential.response";
 
 export default class CredentialsService extends Service {
 	private static instance: CredentialsService;
@@ -17,9 +16,9 @@ export default class CredentialsService extends Service {
 		super("credentials");
 	}
 
-	getAll(provider: GitProviderEnum) {
+	getAll(provider: string) {
 		const apiUri = this.getApiUri("/" + provider);
-		return this.get<GithubCredentialResponse[]>(apiUri.toString());
+		return this.get<CredentialResponse[]>(apiUri.toString());
 	}
 
 	deleteCredential(dto: DeleteCredentialRequest) {

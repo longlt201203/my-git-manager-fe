@@ -3,7 +3,7 @@ import BitBucketIcon from "@/icons/bitbucket";
 import GithubIcon from "@/icons/github";
 import GitLabIcon from "@/icons/gitlab";
 import MainLayout from "@/layouts/MainLayout";
-import GithubCollapse from "./GithubCollapse";
+import GithubCollapse from "./components/GithubCollapse";
 import { Collapse, Typography } from "antd";
 const { Title, Text } = Typography;
 

@@ -1,10 +1,8 @@
-import { GitProviderEnum } from "@/etc/enums";
+import ProjectRepositoryRequest from "./project-repository.request";
 
 export default interface ProjectRequest {
 	name: string;
 	description: string;
-	gitName: string;
-	url: string;
-	credentialId: number;
-	provider: GitProviderEnum;
+	mainRepo?: ProjectRepositoryRequest;
+	childrenRepos: ProjectRepositoryRequest[];
 }
