@@ -2,13 +2,19 @@ import MainLayout from "@/layouts/MainLayout";
 import { Button, Divider, Flex, Space, Typography } from "antd";
 import ProjectInfoForm from "./components/ProjectInfoForm";
 import ProjectRepositoryListForm, {
-	useProjectRepositoryListFormForm,
+	useProjectRepositoryListForm,
 } from "./components/ProjectRepositoryListForm";
 
 const { Title } = Typography;
 
 export default function CreateProjectPage() {
-	const projectRepositoryListForm = useProjectRepositoryListFormForm();
+	const projectRepositoryListForm = useProjectRepositoryListForm();
+
+	const handleSave = () => {
+		projectRepositoryListForm.submit((data) => {
+			console.log(data);
+		});
+	};
 
 	return (
 		<MainLayout>
@@ -21,7 +27,7 @@ export default function CreateProjectPage() {
 				<ProjectRepositoryListForm form={projectRepositoryListForm} />
 				<Divider />
 				<Space>
-					<Button size="large" type="primary">
+					<Button size="large" type="primary" onClick={handleSave}>
 						Save
 					</Button>
 				</Space>

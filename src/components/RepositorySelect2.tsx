@@ -4,8 +4,8 @@ import { Select } from "antd";
 import { useEffect, useState } from "react";
 
 export interface RepositorySelectProps {
-	value?: GitRepoDto | null;
-	onChange?: (value: GitRepoDto) => void;
+	value?: number | null;
+	onChange?: (value: GitRepoDto | undefined) => void;
 	onFetching?: () => void;
 	onFinishFetching?: (err?: any) => void;
 	provider?: string | null;
@@ -20,6 +20,8 @@ export default function RepositorySelect({
 	onFetching,
 	onFinishFetching,
 }: RepositorySelectProps) {
+	const [internalValue, setInternalValue] = useState(value);
+
 	const [data, setData] = useState<GitRepoDto[]>([]);
 	const projectsSerivce = ProjectsService.getInstance();
 
@@ -41,31 +43,25 @@ export default function RepositorySelect({
 	};
 
 	useEffect(() => {
+		handleChange(undefined);
 		setData([]);
 		fetchGitRepos();
 	}, [provider, credentialId]);
 
-	const [index, setIndex] = useState<number | null>(
-		value ? data.findIndex((item) => item.id === value.id) : null,
-	);
-
-	const handleChange = (value: number) => {
-		setIndex(value);
-		onChange && onChange(data[value]);
+	const handleChange = (value: number | undefined) => {
+		setInternalValue(value);
+		const item = data.find((item) => item.id == value);
+		onChange && onChange(item);
 	};
-
-	useEffect(() => {
-		setIndex(null);
-	}, [data]);
 
 	return (
 		<Select
 			placeholder="Select Repository"
-			options={data.map((item, index) => ({
+			options={data.map((item) => ({
 				label: item.name,
-				value: index,
+				value: item.id,
 			}))}
-			value={index}
+			value={internalValue}
 			onChange={handleChange}
 			showSearch
 			filterOption={(input, option) =>

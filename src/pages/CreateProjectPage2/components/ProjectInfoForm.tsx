@@ -1,31 +1,25 @@
 import CredentialSelect from "@/components/CredentialSelect";
 import ProviderSelect from "@/components/ProviderSelect";
 import CredentialResponse from "@/dto/credentials/credential.response";
-import CredentialsService from "@/services/credentials.service";
+import ProjectRequest from "@/dto/projects/project.request";
 import { Checkbox, Form, Input } from "antd";
 import { useEffect, useState } from "react";
 
-export default function ProjectInfoForm() {
-	const credentialsService = CredentialsService.getInstance();
+interface ProjectInfoFormProps {
+	form?: ProjectInfoFormInstance;
+}
 
+export default function ProjectInfoForm({ form }: ProjectInfoFormProps) {
 	const [isCreateProjectRepository, setIsCreateProjectRepository] =
 		useState(true);
 	const [provider, setProvider] = useState<string | null>(null);
-	const [credentialOptions, setCredentialOptions] = useState<
-		CredentialResponse[]
-	>([]);
 	const [credential, setCredential] = useState<CredentialResponse>();
-
-	const fetchCredentials = async () => {
-		if (!provider) return;
-		const credentials = await credentialsService.getAll(provider);
-		setCredentialOptions(credentials);
-	};
 
 	useEffect(() => {
 		setCredential(undefined);
-		fetchCredentials();
 	}, [provider]);
+
+	if (form) form.submit = (cb) => {};
 
 	return (
 		<Form size="large" layout="vertical">
@@ -52,7 +46,7 @@ export default function ProjectInfoForm() {
 			</Form.Item>
 			<Form.Item label="Account">
 				<CredentialSelect
-					data={credentialOptions}
+					provider={provider}
 					value={credential}
 					onChange={(credential) => setCredential(credential)}
 					disabled={!isCreateProjectRepository}
@@ -67,3 +61,13 @@ export default function ProjectInfoForm() {
 		</Form>
 	);
 }
+
+export interface ProjectInfoFormInstance {
+	submit: (cb: (data: ProjectRequest) => void) => void;
+}
+
+export const useProjectRepositoryForm = (): ProjectInfoFormInstance => {
+	return {
+		submit: () => {},
+	};
+};

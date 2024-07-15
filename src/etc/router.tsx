@@ -1,5 +1,5 @@
 import RootLayout from "@/layouts/RootLayout";
-import CreateProjectPage from "@/pages/CreateProjectPage2";
+import CreateProjectPage from "@/pages/CreateProjectPage3";
 import CredentialsPage from "@/pages/CredentialsPage";
 import DashboardPage from "@/pages/HomePage";
 import ProjectsPage from "@/pages/ProjectsPage";

@@ -4,8 +4,8 @@ import { Avatar, Select, Space } from "antd";
 import { useEffect, useState } from "react";
 
 export interface CredentialSelectProps {
-	value?: CredentialResponse | null;
-	onChange?: (credential: CredentialResponse) => void;
+	value?: number | null;
+	onChange?: (credential: CredentialResponse | undefined) => void;
 	onFetching?: () => void;
 	onFinishFetching?: (err?: any) => void;
 	disabled?: boolean;
@@ -20,6 +20,8 @@ export default function CredentialSelect({
 	onFinishFetching,
 	disabled,
 }: CredentialSelectProps) {
+	const [internalValue, setInternalValue] = useState(value);
+
 	const credentialsService = CredentialsService.getInstance();
 	const [data, setData] = useState<CredentialResponse[]>([]);
 
@@ -38,31 +40,25 @@ export default function CredentialSelect({
 	};
 
 	useEffect(() => {
+		handleChange(undefined);
 		setData([]);
 		fetchCredentials();
 	}, [provider]);
 
-	const [index, setIndex] = useState<number | undefined>(
-		value ? data.findIndex((item) => item.id === value.id) : undefined,
-	);
-
-	const handleChange = (value: number) => {
-		setIndex(value);
-		onChange && onChange(data[value]);
+	const handleChange = (value: number | undefined) => {
+		setInternalValue(value);
+		const item = data.find((item) => item.id == value);
+		onChange && onChange(item);
 	};
-
-	useEffect(() => {
-		setIndex(undefined);
-	}, [data]);
 
 	return (
 		<Select
-			value={index}
+			value={internalValue}
 			onChange={handleChange}
 			placeholder="Select Account"
-			options={data.map((item, index) => ({
+			options={data.map((item) => ({
 				label: `${item.name} (${item.username})`,
-				value: index,
+				value: item.id,
 				avatar: item.avatar,
 			}))}
 			optionRender={({ label, data }) => (
