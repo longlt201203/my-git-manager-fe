@@ -1,11 +1,7 @@
-export default interface ProjectResponse {
-	id: number;
-	name: string;
-	description: string;
-	gitName: string;
-	url: string;
-	credentialId: number;
-	provider: string;
-	createdAt: Date;
-	updatedAt: Date;
+import ProjectInfoResponse from "@/dto/projects/project-info.response";
+import ProjectRepositoryResponse from "@/dto/projects/project-repository.response";
+
+export default interface ProjectResponse extends ProjectInfoResponse {
+	mainRepo?: ProjectRepositoryResponse;
+	childrenRepos: ProjectRepositoryResponse[];
 }

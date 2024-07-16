@@ -1,9 +1,10 @@
 import RootLayout from "@/layouts/RootLayout";
-import CreateProjectPage from "@/pages/CreateProjectPage3";
+import CreateProjectPage from "@/pages/CreateProjectPage";
 import CredentialsPage from "@/pages/CredentialsPage";
 import DashboardPage from "@/pages/HomePage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import SettingsPage from "@/pages/SettingsPage";
+import ShowProjectPage from "@/pages/ShowProjectPage";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
 		element: <RootLayout />,
 		children: [
 			{
-				path: "",
+				path: "dashboard",
 				element: <DashboardPage />,
 			},
 			{
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
 					{
 						path: "create",
 						element: <CreateProjectPage />,
+					},
+					{
+						path: ":id",
+						element: <ShowProjectPage />,
 					},
 					{
 						path: "",

@@ -1,9 +1,10 @@
-import CredentialSelect from "@/components/CredentialSelect3";
+import CredentialSelect from "@/components/CredentialSelect";
 import ProviderSelect from "@/components/ProviderSelect";
-import RepositorySelect from "@/components/RepositorySelect2";
+import RepositorySelect from "@/components/RepositorySelect";
 import CredentialResponse from "@/dto/credentials/credential.response";
 import ProjectRequest from "@/dto/projects/project.request";
 import MainLayout from "@/layouts/MainLayout";
+import ProjectsService from "@/services/projects.service";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import {
 	Button,
@@ -18,6 +19,7 @@ import {
 	Typography,
 } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -25,12 +27,42 @@ export default function CreateProjectPage() {
 	const [form] = Form.useForm<ProjectRequest>();
 	const [messageApi, contextHolder] = message.useMessage();
 	const repositorySelectFetchingMsgKey = "repositorySelectFetching";
+	const creatingMsgKey = "creating";
+	const projectsService = ProjectsService.getInstance();
+	const navigate = useNavigate();
+	const [createProjectRepository, setCreateProjectRepository] = useState(true);
+	const [loading, setLoading] = useState(false);
 
-	const handleFormFinish = (data: ProjectRequest) => {
-		console.log(data);
+	const handleFormFinish = async (data: ProjectRequest) => {
+		data.mainRepo = createProjectRepository ? data.mainRepo : undefined;
+		data.childrenRepos = data.childrenRepos || [];
+		setLoading(true);
+		message.open({
+			key: creatingMsgKey,
+			content: "Creating...",
+			type: "loading",
+			duration: 0,
+		});
+		try {
+			await projectsService.create(data);
+			message.open({
+				key: creatingMsgKey,
+				content: "Created!",
+				type: "success",
+				duration: 1.5,
+			});
+			navigate("/projects");
+		} catch (err) {
+			message.open({
+				key: creatingMsgKey,
+				content: "Create error!",
+				type: "error",
+				duration: 1.5,
+			});
+		}
+		setLoading(false);
 	};
 
-	const [createProjectRepository, setCreateProjectRepository] = useState(true);
 	const [mainRepoProvider, setMainRepoProvider] = useState<string>();
 	const [childrenReposProvider, setChildrenReposProvider] = useState<string[]>(
 		[],
@@ -50,10 +82,10 @@ export default function CreateProjectPage() {
 				size="large"
 				layout="vertical"
 				onFinish={handleFormFinish}
-				disabled={repositorySelectFetching}
+				disabled={repositorySelectFetching || loading}
 			>
 				<Title level={3}>Project Info</Title>
-				<Form.Item
+				<Form.Item<ProjectRequest>
 					name="name"
 					label="Project Name"
 					rules={[
@@ -64,7 +96,7 @@ export default function CreateProjectPage() {
 				>
 					<Input placeholder="Project Name" />
 				</Form.Item>
-				<Form.Item
+				<Form.Item<ProjectRequest>
 					name="description"
 					label="Project Description"
 					rules={[
@@ -189,16 +221,20 @@ export default function CreateProjectPage() {
 										<CredentialSelect
 											value={childrenReposCredential[index]}
 											provider={childrenReposProvider[index]}
-											onChange={(credential) =>
+											onChange={(credential) => {
+												form.setFieldValue(
+													["childrenRepos", item.name, "credentialId"],
+													credential?.id,
+												);
 												setChildrenReposCredential((prev) => {
 													prev[index] = credential;
 													return [...prev];
-												})
-											}
+												});
+											}}
 										/>
 									</Form.Item>
 									<Form.Item name={[item.name, "credentialId"]} hidden>
-										<InputNumber value={childrenReposCredential[index]?.id} />
+										<InputNumber />
 									</Form.Item>
 									<Form.Item
 										label="Repository"
@@ -234,7 +270,23 @@ export default function CreateProjectPage() {
 												}
 												setRepositorySelectFetching(false);
 											}}
+											onChange={(gitRepo) => {
+												form.setFieldValue(
+													["childrenRepos", item.name, "name"],
+													gitRepo?.name,
+												);
+												form.setFieldValue(
+													["childrenRepos", item.name, "url"],
+													gitRepo?.url,
+												);
+											}}
 										/>
+									</Form.Item>
+									<Form.Item name={[item.name, "name"]} hidden>
+										<Input />
+									</Form.Item>
+									<Form.Item name={[item.name, "url"]} hidden>
+										<Input />
 									</Form.Item>
 								</Flex>
 							))}

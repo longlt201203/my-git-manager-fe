@@ -3,66 +3,54 @@ import CredentialsService from "@/services/credentials.service";
 import { Avatar, Select, Space } from "antd";
 import { useEffect, useState } from "react";
 
-export interface CredentialSelectProps {
-	value?: CredentialResponse | null;
-	onChange?: (credential: CredentialResponse) => void;
-	onFetching?: () => void;
-	onFinishFetching?: (err?: any) => void;
+interface CredentialSelectProps {
+	provider?: string;
+	value?: CredentialResponse;
+	onChange?: (value?: CredentialResponse) => void;
 	disabled?: boolean;
-	provider?: string | null;
 }
 
 export default function CredentialSelect({
-	value,
 	provider,
+	value,
 	onChange,
-	onFetching,
-	onFinishFetching,
 	disabled,
 }: CredentialSelectProps) {
-	const credentialsService = CredentialsService.getInstance();
-	const [data, setData] = useState<CredentialResponse[]>([]);
+	const [selectedCredential, setSelectedCredential] = useState<
+		CredentialResponse | undefined
+	>();
+	const [credentialOptions, setCredentialOptions] = useState<
+		CredentialResponse[]
+	>([]);
 
 	const fetchCredentials = async () => {
 		if (provider) {
-			let error = undefined;
-			onFetching && onFetching();
-			try {
-				const credentials = await credentialsService.getAll(provider);
-				setData(credentials);
-			} catch (err) {
-				error = err;
-			}
-			onFinishFetching && onFinishFetching(error);
+			const credentialsService = CredentialsService.getInstance();
+			const data = await credentialsService.getAll(provider);
+			setCredentialOptions(data);
 		}
 	};
 
-	useEffect(() => {
-		setData([]);
-		fetchCredentials();
-	}, [provider]);
-
-	const [index, setIndex] = useState<number | undefined>(
-		value ? data.findIndex((item) => item.id === value.id) : undefined,
-	);
-
-	const handleChange = (value: number) => {
-		setIndex(value);
-		onChange && onChange(data[value]);
+	const triggerChange = (value: number | undefined) => {
+		let selectCredential = undefined;
+		if (value) {
+			selectCredential = credentialOptions.find((item) => item.id == value);
+		}
+		setSelectedCredential(selectCredential);
+		onChange?.(selectCredential);
 	};
 
 	useEffect(() => {
-		setIndex(undefined);
-	}, [data]);
+		triggerChange(undefined);
+		setCredentialOptions([]);
+		fetchCredentials();
+	}, [provider]);
 
 	return (
 		<Select
-			value={index}
-			onChange={handleChange}
-			placeholder="Select Account"
-			options={data.map((item, index) => ({
+			options={credentialOptions.map((item) => ({
 				label: `${item.name} (${item.username})`,
-				value: index,
+				value: item.id,
 				avatar: item.avatar,
 			}))}
 			optionRender={({ label, data }) => (
@@ -71,6 +59,8 @@ export default function CredentialSelect({
 					{label}
 				</Space>
 			)}
+			value={value?.id || selectedCredential?.id}
+			onChange={triggerChange}
 			disabled={disabled}
 		/>
 	);

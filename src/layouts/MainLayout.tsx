@@ -15,7 +15,7 @@ const { Text } = Typography;
 const navItems: MenuItem[] = [
 	{
 		label: "Dashboard",
-		key: "",
+		key: "dashboard",
 		icon: <DashboardOutlined />,
 	},
 	{
