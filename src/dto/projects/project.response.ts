@@ -4,4 +4,5 @@ import ProjectRepositoryResponse from "@/dto/projects/project-repository.respons
 export default interface ProjectResponse extends ProjectInfoResponse {
 	mainRepo?: ProjectRepositoryResponse;
 	childrenRepos: ProjectRepositoryResponse[];
+	localPath: string;
 }

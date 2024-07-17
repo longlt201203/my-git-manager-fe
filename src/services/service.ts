@@ -6,19 +6,20 @@ export default class Service {
 	constructor(protected readonly basePath: string) {}
 
 	getApiUri(path: string, query?: any) {
-		const apiUri = new URL(import.meta.env.VITE_API_URI + this.basePath + path);
+		const url = "/api/" + this.basePath + path;
+		const searchParams = new URLSearchParams();
 		if (query) {
 			for (const key in query) {
 				if (Array.isArray(query[key])) {
 					for (const item of query[key]) {
-						apiUri.searchParams.append(key, item);
+						searchParams.append(key, item);
 					}
 				} else {
-					apiUri.searchParams.set(key, query[key]);
+					searchParams.set(key, query[key]);
 				}
 			}
 		}
-		return apiUri;
+		return `${url}?${searchParams.toString()}`;
 	}
 
 	async get<T>(uri: string, config?: AxiosRequestConfig) {

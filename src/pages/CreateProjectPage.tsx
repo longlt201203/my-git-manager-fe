@@ -86,11 +86,23 @@ export default function CreateProjectPage() {
 			>
 				<Title level={3}>Project Info</Title>
 				<Form.Item<ProjectRequest>
+					validateTrigger="onBlur"
 					name="name"
 					label="Project Name"
 					rules={[
 						{
 							required: true,
+						},
+						{
+							validator: async (_, value) => {
+								if (value) {
+									const isExisted = await projectsService.checkProjectName({
+										name: value,
+									});
+									if (isExisted)
+										throw new Error("Project name has already existed");
+								}
+							},
 						},
 					]}
 				>
@@ -130,6 +142,7 @@ export default function CreateProjectPage() {
 					/>
 				</Form.Item>
 				<Form.Item
+					validateTrigger="onBlur"
 					label="Account"
 					name={["mainRepo", "credential"]}
 					rules={[
@@ -165,8 +178,26 @@ export default function CreateProjectPage() {
 				</Form.Item>
 				<Divider />
 				<Title level={3}>Project Repositories</Title>
-				<Form.List name="childrenRepos">
-					{(fields, { add, remove }) => (
+				<Form.List
+					name="childrenRepos"
+					rules={[
+						{
+							validator: async (_, value: any[]) => {
+								if (!value || value.length < 1) {
+									throw new Error("Project must have at least 1 repository");
+								}
+								if (!value.includes(undefined))
+									for (let i = 0; i < value.length - 1; i++) {
+										for (let j = i + 1; j < value.length; j++) {
+											if (value[i].name == value[j].name)
+												throw new Error("Duplicated repository");
+										}
+									}
+							},
+						},
+					]}
+				>
+					{(fields, { add, remove }, { errors }) => (
 						<>
 							{fields.map((item, index) => (
 								<Flex key={item.key} vertical>
@@ -212,6 +243,7 @@ export default function CreateProjectPage() {
 									<Form.Item
 										label="Account"
 										name={[item.name, "credential"]}
+										validateTrigger="onBlur"
 										rules={[
 											{
 												required: true,
@@ -237,6 +269,7 @@ export default function CreateProjectPage() {
 										<InputNumber />
 									</Form.Item>
 									<Form.Item
+										validateTrigger="onBlur"
 										label="Repository"
 										name={[item.name, "gitRepo"]}
 										rules={[
@@ -279,6 +312,10 @@ export default function CreateProjectPage() {
 													["childrenRepos", item.name, "url"],
 													gitRepo?.url,
 												);
+												form.setFieldValue(
+													["childrenRepos", item.name, "htmlUrl"],
+													gitRepo?.htmlUrl,
+												);
 											}}
 										/>
 									</Form.Item>
@@ -286,6 +323,9 @@ export default function CreateProjectPage() {
 										<Input />
 									</Form.Item>
 									<Form.Item name={[item.name, "url"]} hidden>
+										<Input />
+									</Form.Item>
+									<Form.Item name={[item.name, "htmlUrl"]} hidden>
 										<Input />
 									</Form.Item>
 								</Flex>
@@ -298,6 +338,7 @@ export default function CreateProjectPage() {
 								>
 									Add Repository
 								</Button>
+								<Form.ErrorList errors={errors} />
 							</Form.Item>
 						</>
 					)}

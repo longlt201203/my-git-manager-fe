@@ -17,11 +17,16 @@ export default class SettingsService extends Service {
 
 	getSettings() {
 		const apiUri = this.getApiUri("/");
-		return this.get<SettingsDto>(apiUri.toString());
+		return this.get<SettingsDto>(apiUri);
 	}
 
 	generateSshKeyPair() {
 		const apiUri = this.getApiUri("/generate-ssh-key-pair");
-		return this.get<SshKeyPairDto>(apiUri.toString());
+		return this.get<SshKeyPairDto>(apiUri);
+	}
+
+	updateSettings(dto: SettingsDto) {
+		const apiUri = this.getApiUri("/");
+		return this.put(apiUri, dto);
 	}
 }

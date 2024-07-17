@@ -6,4 +6,6 @@ export default interface ProjectRepositoryResponse {
 	url: string;
 	credential: CredentialResponse;
 	type: string;
+	localPath: string;
+	htmlUrl?: string;
 }

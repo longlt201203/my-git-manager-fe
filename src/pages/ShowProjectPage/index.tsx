@@ -2,7 +2,7 @@ import ProjectResponse from "@/dto/projects/project.response";
 import VSCodeIcon from "@/icons/vscode";
 import MainLayout from "@/layouts/MainLayout";
 import ProjectsService from "@/services/projects.service";
-import { LinkOutlined, ReadOutlined } from "@ant-design/icons";
+import { EyeOutlined, LinkOutlined } from "@ant-design/icons";
 import {
 	Button,
 	Card,
@@ -39,7 +39,13 @@ export default function ShowProjectPage() {
 		<MainLayout>
 			<Title>{project?.name}</Title>
 			<Space direction="vertical">
-				<Text>{project?.description}</Text>
+				<Text className="text-base">{project?.description}</Text>
+				<Button
+					icon={<VSCodeIcon />}
+					onClick={() => window.open(`vscode://file/${project?.localPath}`)}
+				>
+					Open Project Folder With VSCode
+				</Button>
 			</Space>
 			<Title level={2}>Repositories</Title>
 			<List
@@ -49,15 +55,26 @@ export default function ShowProjectPage() {
 					<List.Item key={item.id}>
 						<Card
 							title={item.name}
+							extra={
+								<Tooltip title="View Repository">
+									<Button icon={<EyeOutlined />}></Button>
+								</Tooltip>
+							}
 							actions={[
-								<Tooltip title="Open README.md">
-									<Button icon={<ReadOutlined />}></Button>
-								</Tooltip>,
 								<Tooltip title="Open Git Repository">
-									<Button icon={<LinkOutlined />}></Button>
+									<Button
+										disabled={item.htmlUrl ? false : true}
+										icon={<LinkOutlined />}
+										onClick={() => window.open(item.htmlUrl)}
+									></Button>
 								</Tooltip>,
 								<Tooltip title="Open with VSCode">
-									<Button icon={<VSCodeIcon />}></Button>
+									<Button
+										icon={<VSCodeIcon />}
+										onClick={() =>
+											window.open(`vscode://file/${item.localPath}`)
+										}
+									></Button>
 								</Tooltip>,
 							]}
 						>
@@ -65,6 +82,13 @@ export default function ShowProjectPage() {
 								<Form.Item label="Git URL">
 									<Input
 										value={item.url}
+										readOnly
+										onClick={(e) => e.currentTarget.select()}
+									/>
+								</Form.Item>
+								<Form.Item label="Local Path">
+									<Input
+										value={item.localPath}
 										readOnly
 										onClick={(e) => e.currentTarget.select()}
 									/>
@@ -80,6 +104,7 @@ export default function ShowProjectPage() {
 					</List.Item>
 				)}
 			/>
+			<Title level={2}>Repository Stats</Title>
 		</MainLayout>
 	);
 }
