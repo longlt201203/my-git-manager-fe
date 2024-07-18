@@ -1,6 +1,7 @@
 import ProjectResponse from "@/dto/projects/project.response";
 import VSCodeIcon from "@/icons/vscode";
 import MainLayout from "@/layouts/MainLayout";
+import RepositoryView from "@/pages/ShowProjectPage/components/RepositoryView";
 import ProjectsService from "@/services/projects.service";
 import { EyeOutlined, LinkOutlined } from "@ant-design/icons";
 import {
@@ -105,6 +106,7 @@ export default function ShowProjectPage() {
 				)}
 			/>
 			<Title level={2}>Repository Stats</Title>
+			<RepositoryView />
 		</MainLayout>
 	);
 }
