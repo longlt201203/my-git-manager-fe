@@ -83,6 +83,7 @@ export default function CreateProjectPage() {
 				layout="vertical"
 				onFinish={handleFormFinish}
 				disabled={repositorySelectFetching || loading}
+				autoComplete="off"
 			>
 				<Title level={3}>Project Info</Title>
 				<Form.Item<ProjectRequest>

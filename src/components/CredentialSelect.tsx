@@ -62,6 +62,7 @@ export default function CredentialSelect({
 			value={value?.id || selectedCredential?.id}
 			onChange={triggerChange}
 			disabled={disabled}
+			placeholder="Select Account"
 		/>
 	);
 }
