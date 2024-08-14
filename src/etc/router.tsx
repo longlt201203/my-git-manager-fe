@@ -3,6 +3,7 @@ import CreateProjectPage from "@/pages/CreateProjectPage";
 import CredentialsPage from "@/pages/CredentialsPage";
 import DashboardPage from "@/pages/HomePage";
 import ProjectsPage from "@/pages/ProjectsPage";
+import RepositoryDetailPage from "@/pages/RepositoryDetailPage";
 import SettingsPage from "@/pages/SettingsPage";
 import ShowProjectPage from "@/pages/ShowProjectPage";
 import { createBrowserRouter } from "react-router-dom";
@@ -17,20 +18,28 @@ const router = createBrowserRouter([
 				element: <DashboardPage />,
 			},
 			{
-				path: "/projects",
-
+				path: "projects",
 				children: [
 					{
 						path: "create",
 						element: <CreateProjectPage />,
 					},
 					{
-						path: ":id",
+						path: ":projectId",
 						element: <ShowProjectPage />,
 					},
 					{
 						path: "",
 						element: <ProjectsPage />,
+					},
+				],
+			},
+			{
+				path: "repo",
+				children: [
+					{
+						path: ":repoId",
+						element: <RepositoryDetailPage />,
 					},
 				],
 			},

@@ -1,7 +1,6 @@
 import ProjectResponse from "@/dto/projects/project.response";
 import VSCodeIcon from "@/icons/vscode";
 import MainLayout from "@/layouts/MainLayout";
-import RepositoryView from "@/pages/ShowProjectPage/components/RepositoryView";
 import ProjectsService from "@/services/projects.service";
 import { EyeOutlined, LinkOutlined } from "@ant-design/icons";
 import {
@@ -15,26 +14,32 @@ import {
 	Typography,
 } from "antd";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 export default function ShowProjectPage() {
-	const { id } = useParams();
+	const navigate = useNavigate();
+	const { projectId } = useParams();
 	const [project, setProject] = useState<ProjectResponse>();
 	const projectsService = ProjectsService.getInstance();
 
 	const fetchProject = async () => {
-		if (id && parseInt(id)) {
-			const data = await projectsService.getOne(parseInt(id));
-			setProject(data);
-		} else {
+		try {
+			if (projectId && parseInt(projectId)) {
+				const data = await projectsService.getOne(parseInt(projectId));
+				setProject(data);
+			} else {
+				// 404
+			}
+		} catch (err) {
+			// 404
 		}
 	};
 
 	useEffect(() => {
 		fetchProject();
-	}, []);
+	}, [projectId]);
 
 	return (
 		<MainLayout>
@@ -58,7 +63,12 @@ export default function ShowProjectPage() {
 							title={item.name}
 							extra={
 								<Tooltip title="View Repository">
-									<Button icon={<EyeOutlined />}></Button>
+									<Button
+										icon={<EyeOutlined />}
+										onClick={() => {
+											navigate(`/repo/${item.id}`);
+										}}
+									></Button>
 								</Tooltip>
 							}
 							actions={[
@@ -106,7 +116,6 @@ export default function ShowProjectPage() {
 				)}
 			/>
 			<Title level={2}>Repository Stats</Title>
-			<RepositoryView />
 		</MainLayout>
 	);
 }

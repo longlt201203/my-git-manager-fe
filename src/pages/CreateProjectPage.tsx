@@ -30,7 +30,7 @@ export default function CreateProjectPage() {
 	const creatingMsgKey = "creating";
 	const projectsService = ProjectsService.getInstance();
 	const navigate = useNavigate();
-	const [createProjectRepository, setCreateProjectRepository] = useState(true);
+	const [createProjectRepository, setCreateProjectRepository] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const handleFormFinish = async (data: ProjectRequest) => {
@@ -124,6 +124,7 @@ export default function CreateProjectPage() {
 					<Checkbox
 						checked={createProjectRepository}
 						onChange={(e) => setCreateProjectRepository(e.target.checked)}
+						disabled
 					>
 						Create Project Repository
 					</Checkbox>
